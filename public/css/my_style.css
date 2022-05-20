@@ -1,0 +1,96 @@
+
+:root {
+    --form-control-color: rebeccapurple;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+.choice-correct:focus-within, .choice-correct::before {
+    color: green;
+    box-shadow: inset 20px 20px green;
+}
+
+.choice-error:focus-within, .choice-error::before{
+    color: red;
+    box-shadow: inset 20px 20px red;
+}
+
+.choice-error:checked {
+    border-color: red;
+}
+
+.choice-correct:checked {
+    border-color: green;
+}
+
+.choice-normal:checked {
+    border-color: #005cbf;
+}
+
+.choice-normal:focus-within, .choice-normal::before {
+    color: #005cbf;
+    box-shadow: inset 20px 20px #005cbf;
+}
+
+input[type="radio"] {
+    /* Add if not using autoprefixer */
+    -webkit-appearance: none;
+    /* Remove most all native input styles */
+    appearance: none;
+    /* For iOS < 15
+    background-color: var(--form-background);
+    /* Not removed via appearance */
+    margin: 0;
+
+    font: inherit;
+    color: currentColor;
+    width: 30px;
+    height: 30px;
+    border: 3px solid currentColor;
+    border-radius: 50%;
+    /*transform: translateY(1px);*/
+    display: grid;
+    place-content: center;
+}
+
+input[type="radio"]::before {
+    content: "";
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    /* Windows High Contrast Mode
+    background-color: CanvasText; */
+}
+
+input[type="radio"]:checked::before {
+    transform: scale(1);
+}
+
+input[type="radio"]:focus {
+    outline: max(2px, 0.15em) solid currentColor;
+    outline-offset: max(2px, 0.15em);
+}
+
+.my-label{
+    font-size: 20px;
+    margin: 0;
+    padding: 0;
+}
+
+.taking-visible{
+    display: block;
+}
+
+.taking-hidden{
+    display: none;
+}
