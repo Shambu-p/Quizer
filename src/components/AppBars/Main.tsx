@@ -30,8 +30,7 @@ export default function (){
 
         try{
 
-            // @ts-ignore
-            await Logout(store.logged_user.token);
+            await Logout(store.getUser().token);
             store.logged_user = null;
             setState(false);
             navigate("/login");
@@ -50,7 +49,7 @@ export default function (){
                 <Box>
                     <ButtonGroup variant="contained" size="small">
                         <Button className="bg-dark" sx={{display: (is_logged_in ? "" : "none")}} onClick={() => {navigate("/results")}}>Results</Button>
-                        <Button className="bg-dark" sx={{display: ((is_logged_in && store.logged_user.role === "admin") ? "" : "none")}} onClick={() => {navigate("/exam/create")}}>Add Exam</Button>
+                        <Button className="bg-dark" sx={{display: ((is_logged_in && store.getUser().role === "admin") ? "" : "none")}} onClick={() => {navigate("/exam/create")}}>Add Exam</Button>
                         <Button className="bg-dark" sx={{display: (is_logged_in ? "" : "none")}} onClick={() => {navigate("/exam/show")}}>Exams</Button>
                         <Button className="bg-dark" sx={{display: (is_logged_in ? "" : "none")}} onClick={logout}>Logout</Button>
                     </ButtonGroup>

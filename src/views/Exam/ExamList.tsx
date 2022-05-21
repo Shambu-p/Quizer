@@ -51,8 +51,7 @@ export default function (){
                         [{exam.count ?? 0}] {exam.subject ?? "unknown"} Subject Questions
                     </Typography>
                     {
-                        //@ts-ignore
-                        ((variables.logged_user.role === "admin") ? (
+                        ((variables.getUser().role === "admin") ? (
                             <Button size="small" variant="contained" className="bg-dark" sx={{mr: 2}} onClick={() => {navigate("/exam_detail/" + exam.id)}}>
                                 view
                             </Button>

@@ -8,9 +8,7 @@ export default function AddTodo(props: {add_question: Function}){
     });
 
     let textOnChange = (event: any) => {
-        let inpt = inputs;
-        inpt.text = event.target.value;
-        setInputs(inpt);
+        setInputs({...inputs, text: event.target.value});
     };
 
     let formOnSubmit = async (event: any) => {

@@ -9,13 +9,19 @@ import ExamQuestionCombination from "../../Models/ExamQuestionCombination";
 import ExamResult from "../../Models/ExamResult";
 import Exam from "../../Models/Exam";
 
+const examPlaceholder = {
+    id: 0,
+    title: "",
+    data: 0,
+    subject: "",
+    description: "",
+    count: 0
+};
 
 export default function (){
 
-    //@ts-ignore
-    const [exam, setExam] = useState<Exam>({});
-    //@ts-ignore
-    const [result, setResult] = useState<ExamResult>({});
+    const [exam, setExam] = useState<Exam>();
+    const [result, setResult] = useState<ExamResult>();
     const [questions, setQuestions] = useState<ExamQuestionCombination[]>([]);
     const params: any = useParams();
     const navigate = useNavigate();
@@ -31,8 +37,7 @@ export default function (){
 
             try {
 
-                // @ts-ignore
-                let response = await Result.find(params.result_id, variables.logged_user.token);
+                let response = await Result.find(params.result_id, variables.getUser().token);
 
                 setExam(response.exam);
                 setResult(response.result);
@@ -55,15 +60,15 @@ export default function (){
     return (
         <div className="container mt-4">
 
-            <ExamAppbar exam={exam} />
+            <ExamAppbar exam={exam ?? examPlaceholder} />
             <Card sx={{mb: 3, p: 1, backgroundColor: 'black', color: "white"}} >
                 <CardContent className="d-flex justify-content-between" sx={{m: 0}}>
 
                     <Typography variant="h5" component="div">All Questions and Answers</Typography>
                     <Typography sx={{m: 0}} variant="h5" component="span">
                         Correct answers
-                        <span className="badge badge-primary ml-2" component="div" >
-                            {result.score}
+                        <span className="badge badge-primary ml-2" >
+                            {result ? result.score : ""}
                         </span>
                     </Typography>
                     

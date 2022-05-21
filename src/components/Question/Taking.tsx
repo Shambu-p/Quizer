@@ -22,8 +22,7 @@ type myProp = {
 
 export default function (props: myProp){
 
-    // @ts-ignore
-    const [questions, setQuestion] = useState<Question>({});
+    const [questions, setQuestion] = useState<Question>();
     const [choices, setChoices] = useState<Choice[]>([]);
     const [inputs, setInputs] = useState({
         choice: "",
@@ -62,19 +61,18 @@ export default function (props: myProp){
 
     let answering = (event: any) => {
         event.preventDefault();
-        // @ts-ignore
-        props.answer_method(inputs.choice, questions.id);
+        props.answer_method(inputs.choice, (questions ? questions.id : null));
     }
 
     return (
         <Card className="card mb-3" sx={(props.visibility_type ? {}:{display: 'none'})} id={props.identifier}>
-            <CardHeader title={questions.text}/>
+            <CardHeader title={(questions ? questions.text:"")}/>
             <CardContent>
                 <Box component="form" onSubmit={answering}>
                     <FormControl>
                         <RadioGroup
                             aria-labelledby="demo-controlled-radio-buttons-group"
-                            name={"choice_" + questions.id}
+                            name={"choice_" + (questions ? questions.id : "")}
                             value={inputs.choice}
                             onChange={choiceOnChange}
                         >

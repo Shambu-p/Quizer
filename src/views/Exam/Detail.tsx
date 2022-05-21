@@ -64,10 +64,10 @@ export default function () {
             <ExamAppbar exam={exam} />
             
             <Box component="div" sx={{p: 3}}>
-                <Typography variant="p" component="div" sx={{mb: 5}} className="lead">
+                <Typography variant="body1" component="div" sx={{mb: 5}} className="lead">
                     {exam.description ?? ""}
                 </Typography>
-                <Button variant="contained" size="big" className="bg-dark" onClick={() => {startExam();}}>Start Examination</Button>
+                <Button variant="contained" className="bg-dark" onClick={() => {startExam();}}>Start Examination</Button>
             </Box>
 
         </div>

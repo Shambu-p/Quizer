@@ -1,7 +1,6 @@
 import {useNavigate} from 'react-router-dom';
 import React, {useEffect, useState} from "react";
 import variables, {loginAuth} from '../../Auth';
-// @ts-ignore
 import MainAppbar from '../../components/AppBars/Main';
 import EmptyMessage from '../../components/Extra/EmptyMessage';
 import {Result} from "../../Fetch";
@@ -22,8 +21,7 @@ export default function (){
 
             try {
 
-                // @ts-ignore
-                let response: never[] = await Result.byUser(variables.logged_user.token);
+                let response: never[] = await Result.byUser(variables.getUser().token);
 
                 setResults(response);
 
@@ -41,16 +39,16 @@ export default function (){
             title="You did not take any Exam!" 
             subTitle="take some examinations"
         />
-    ) : results.map(result => {
-        console.log(result.exam_title)
+    ) : results.map(({ExamResult_id, ExamResult_score, exam_title}) => {
+        console.log(exam_title)
         return (
-            <div className="card mb-3" key={result.ExamResult_id}>
+            <div className="card mb-3" key={ExamResult_id}>
                 <div className="card-body">
-                    <h4 className="card-title">{result.exam_title}</h4>
+                    <h4 className="card-title">{exam_title}</h4>
                     <h5 className="card-subtitle mb-3">
-                        Score: <span className="badge badge-success">{result.ExamResult_score ?? 0}</span>
+                        Score: <span className="badge badge-success">{ExamResult_score ?? 0}</span>
                     </h5>
-                    <button className="btn btn-sm btn-link" onClick={() => {navigate("/result_view/" + result.ExamResult_id)}}>
+                    <button className="btn btn-sm btn-link" onClick={() => {navigate("/result_view/" + ExamResult_id)}}>
                         view
                     </button>
                 </div>

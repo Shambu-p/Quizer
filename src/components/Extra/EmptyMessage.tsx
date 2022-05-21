@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, Button, Typography} from "@mui/material";
+import { Card, CardContent, Typography} from "@mui/material";
 
 export default function (props: {title: string, subTitle: string}){
     return (

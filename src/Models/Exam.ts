@@ -4,7 +4,7 @@ interface Exam {
     data: number
     subject: string
     description: string
-    count: number
-};
+    count?: number
+}
 
 export default Exam;

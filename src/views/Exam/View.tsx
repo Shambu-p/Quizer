@@ -9,11 +9,18 @@ import ExamAppbar from "../../components/AppBars/ExamAppbar";
 import Exam from "../../Models/Exam";
 import ExamQuestionCombination from "../../Models/ExamQuestionCombination";
 
+const examPlaceholder = {
+    id: 0,
+    title: "",
+    data: 0,
+    subject: "",
+    description: "",
+    count: 0
+};
 
 export default function (){
 
-    //@ts-ignore
-    const [exam, setExam] = useState<Exam>({});
+    const [exam, setExam] = useState<Exam>();
     const [questions, setQuestions] = useState<ExamQuestionCombination[]>([]);
     const params: any = useParams();
     const navigate = useNavigate();
@@ -48,7 +55,7 @@ export default function (){
             let data = new FormData();
             data.append("text", text);
             data.append("exam_id", params.exam_id);
-            data.append("subject", exam.subject);
+            data.append("subject", (exam ? exam.subject : ""));
             // @ts-ignore
             data.append("token", variables.logged_user.token);
             let response = await api.post("/Exam/add_question", data);
@@ -69,7 +76,7 @@ export default function (){
 
     return (
         <div className="container mt-4">
-            <ExamAppbar exam={exam} />
+            <ExamAppbar exam={exam ?? examPlaceholder} />
             
             <div className="row">
                 <div className="col-lg-8 col-md-6 col-sm-12">

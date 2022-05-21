@@ -106,7 +106,7 @@ export default function (){
                         >
                             Sign In
                         </Button>
-                        <Button onClick={()=>{navigate("/register");}} variant="body2">
+                        <Button onClick={()=>{navigate("/register");}} >
                             Register First
                         </Button>
                     </Box>

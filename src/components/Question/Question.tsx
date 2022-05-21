@@ -49,8 +49,7 @@ export default function (props: {view_type: any, question: any}){
         try {
 
             let data = new FormData();
-            // @ts-ignore
-            data.append("question_id", questions.id);
+            data.append("question_id", (questions ? questions.id.toString() : ""));
             data.append("text", inputs.text);
             let response = await api.post("/Question/add_choice", data);
             if(response.data.data.header === "true"){
@@ -90,7 +89,7 @@ export default function (props: {view_type: any, question: any}){
         if(props.view_type && props.view_type === "edit"){
             return (
                 <Box key={choice.id} className="d-flex justify-content-between" sx={{mb: 2, pl: 3}}>
-                    <Typography variant="span" component="div" sx={{color: 'black', mr: 2}}>{choice.text}</Typography>
+                    <Typography variant="body1" component="div" sx={{color: 'black', mr: 2}}>{choice.text}</Typography>
                     <Button variant="contained" className="bg-dark" size="small" onClick={() => {chooseAnswer(choice.id);}}>Answer</Button>
                 </Box>
             );
@@ -100,9 +99,9 @@ export default function (props: {view_type: any, question: any}){
                 return (
                     <Typography 
                         key={choice.id} 
-                        variant="span" 
+                        variant="body1"
                         component="div" 
-                        sx={{mb: 3, color: ((choice.id === questions.answer) ? "green" : "red")}}
+                        sx={{mb: 3, color: ((questions && choice.id ===  questions.answer) ? "green" : "red")}}
                     >
                         <strong>{choice.text}</strong>
                     </Typography>
@@ -113,7 +112,7 @@ export default function (props: {view_type: any, question: any}){
                 return (
                     <Typography
                         key={choice.id}
-                        variant="span"
+                        variant="body1"
                         component="div"
                         sx={{mb: 3, color: "green"}}
                     >
@@ -124,7 +123,7 @@ export default function (props: {view_type: any, question: any}){
                 return (
                     <Typography
                         key={choice.id}
-                        variant="span"
+                        variant="body1"
                         component="div"
                         sx={{mb: 3, color: 'black'}}
                     >
@@ -159,10 +158,9 @@ export default function (props: {view_type: any, question: any}){
     
     return (
         <Card className="card mb-3">
-            <CardHeader title={questions.text}/>
+            <CardHeader title={(questions ? questions.text : "")}/>
             <CardContent>
                 {choice_components}
-                
             </CardContent>
             {additional_form}
         </Card>

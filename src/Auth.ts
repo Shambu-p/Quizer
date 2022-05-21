@@ -1,8 +1,20 @@
 import api from "./api";
 import * as cookies from "./cookies";
 
+let userPlaceholder = {
+    token: "",
+    id: 0,
+    fullname: "",
+    grade: 0,
+    email: "",
+    role: ""
+};
+
 const variables = {
-    logged_user: null
+    logged_user: null,
+    getUser: () => {
+        return variables.logged_user ?? userPlaceholder;
+    }
 };
 
 export async function loginAuth(){

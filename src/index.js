@@ -1,7 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import './views/Tasks/Home'
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import MainHome from "./views/MainHome";
@@ -20,7 +18,6 @@ import ResultShow from "./views/Result/Show";
 ReactDOM.render((
     <BrowserRouter>
         <Routes>
-
             <Route path="/" element={<MainHome />} />
 
             <Route path="/exam" element={<Exams />} >
@@ -36,7 +33,8 @@ ReactDOM.render((
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Registration />} />
 
-            <Route path="*" element={<Error />} /></Routes>
+            <Route path="*" element={<Error />} />
+        </Routes>
     </BrowserRouter>),
     document.getElementById('root')
 );
