@@ -1,66 +1,47 @@
-import api from "./api";
+import {Request} from "./api";
 import Question from "../Models/Question";
 import Choice from "../Models/Choice";
+import ExamQuestionCombination from "../Models/ExamQuestionCombination";
 
-export class Questions {
+export default class Questions {
 
     static async find(id: number): Promise<{ question: Question, choices: Choice[]}>{
         try{
-
-            let data = new FormData();
-            data.append("question_id", id.toString());
-            let response = await api.post("/Question/view", data);
-            if(response.data.header.error === "true"){
-                throw new Error(response.data.header.message);
-            }
-
-            return response.data.data;
-                
+            return await Request("post", "/Question/view", {question_id: id.toString()});
         }catch(error){
             throw error;
         }
     }
 
-    static async addQuestion({text, exam_id, subject, token}: {text: string, exam_id: number, token: string, subject: string}){
+    static async addQuestion(question_data: {text: string, exam_id: number, token: string, subject: string}): Promise<ExamQuestionCombination>{
     
         try {
-
-            let data = new FormData();
-            data.append("text", text);
-            data.append("exam_id", exam_id.toString());
-            data.append("subject", subject);
-            data.append("token", token);
-            let response = await api.post("/Exam/add_question", data);
-            if(response.data.header.error === "true"){
-                throw new Error(response.data.header.message);
-            }
-
-            return response.data.data;
-
-        }catch ({message}){
-            console.log(message);
-        }
-
-    }
-
-    static async addChoice({question_id, text}: {question_id: number, text: string}){
-
-        try {
-
-            let data = new FormData();
-            data.append("question_id", question_id.toString());
-            data.append("text", text);
-            let response = await api.post("/Question/add_choice", data);
-            if(response.data.data.header === "true"){
-                throw new Error(response.data.header.message);
-            }
-
-            return response.data.data;
-
+            return await Request("post", "/Exam/add_question", question_data);
         }catch (error){
             throw error;
         }
 
+    }
+
+    static async addChoice(choice_data: {question_id: number, text: string}){
+
+        try {
+            return await Request("post", "/Question/add_choice", choice_data);
+        }catch (error){
+            throw error;
+        }
+
+    }
+
+    static async chooseAnswer(question_id: number, answer: number){
+        try{
+            return await Request("post", "/Question/update_answer", {
+                question_id: question_id,
+                answer: answer
+            });
+        }catch(error){
+
+        }
     }
 
 }

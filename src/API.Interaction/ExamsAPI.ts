@@ -1,11 +1,11 @@
-import api, {Request} from "./api";
+import {Request} from "./api";
 import Exam from "../Models/Exam";
 import ExamQuestion from "../Models/ExamQuestion";
 
 /**
  * all the api fetch request methods for Exam api
  */
-export class Exams {
+export default class Exams {
 
     /**
      * this method will fetch all the examination available in the exam table
@@ -63,10 +63,10 @@ export class Exams {
      * @param exam_data
      *      exam_data should contain title, subject name and exam description
      */
-    static async createExam(exam_data: any): Promise<Exam>{
+    static async createExam(exam_data: { title: string, subject: string, description: string}): Promise<Exam>{
 
         try{
-            return await Request("post", "/Exam/detail", exam_data);
+            return await Request("post", "/Exam/save", exam_data);
         }catch(error){
             throw error;
         }

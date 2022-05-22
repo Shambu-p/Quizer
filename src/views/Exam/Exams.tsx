@@ -1,6 +1,5 @@
-import {useNavigate, Outlet} from 'react-router-dom';
-import React, {useEffect} from "react";
-import {loginAuth} from "../../Auth";
+import {Outlet} from 'react-router-dom';
+import React from "react";
 import MainAppbar from "../../components/AppBars/Main";
 
 export default function (){

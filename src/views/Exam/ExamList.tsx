@@ -6,12 +6,14 @@ import { Exams } from '../../Fetch';
 
 import { Card, CardContent, Button, Typography} from "@mui/material";
 import Exam from "../../Models/Exam";
+import useGlobalState from "../../GlobalState";
 
 
 export default function (){
 
     const navigate = useNavigate();
-    let [exams, setExam] = useState<Exam[]>([]);
+    const [exams, setExam] = useState<Exam[]>([]);
+    const [logged_user, setLog] = useGlobalState<"logged_user" | "is_logged_in">("logged_user");
 
     useEffect(()=> {
         let getExams = async () => {
@@ -51,7 +53,7 @@ export default function (){
                         [{exam.count ?? 0}] {exam.subject ?? "unknown"} Subject Questions
                     </Typography>
                     {
-                        ((variables.getUser().role === "admin") ? (
+                        ((typeof logged_user !== "boolean" && logged_user.role === "admin") ? (
                             <Button size="small" variant="contained" className="bg-dark" sx={{mr: 2}} onClick={() => {navigate("/exam_detail/" + exam.id)}}>
                                 view
                             </Button>

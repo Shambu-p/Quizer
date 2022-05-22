@@ -1,15 +1,17 @@
 import {useNavigate} from 'react-router-dom';
 import React, {useEffect, useState} from "react";
-import variables, {loginAuth} from '../../Auth';
+import {loginAuth} from "../../API.Interaction/AuthAPI";
 import MainAppbar from '../../components/AppBars/Main';
 import EmptyMessage from '../../components/Extra/EmptyMessage';
-import {Result} from "../../Fetch";
 import { Card, Button, CardContent, Typography} from "@mui/material";
+import useGlobalState from "../../GlobalState";
+import ResultsAPI from "../../API.Interaction/ResultsAPI";
 
 export default function (){
 
     const navigate = useNavigate();
     let [results, setResults] = useState([]);
+    const [logged_user, setLog] = useGlobalState<"logged_user" | "is_logged_in">("logged_user");
 
     useEffect(()=> {
         let getExams = async () => {
@@ -21,8 +23,7 @@ export default function (){
 
             try {
 
-                let response: never[] = await Result.byUser(variables.getUser().token);
-
+                let response: never[] = await ResultsAPI.byUser(((typeof logged_user !== "boolean" && logged_user) ? logged_user.token : ""));
                 setResults(response);
 
             }catch ({message}){
@@ -40,7 +41,6 @@ export default function (){
             subTitle="take some examinations"
         />
     ) : results.map(({ExamResult_id, ExamResult_score, exam_title}) => {
-        console.log(exam_title)
         return (
             <Card className="card" sx={{mb: 3}}>
                 <CardContent className="card-body">
@@ -64,19 +64,5 @@ export default function (){
             </div>
         </div>
     );
-
-    /* 
-    <div className="card mb-3" key={ExamResult_id}>
-                <div className="card-body">
-                    <h4 className="card-title">{exam_title}</h4>
-                    <h5 className="card-subtitle mb-3">
-                        Score: <span className="badge badge-success">{ExamResult_score ?? 0}</span>
-                    </h5>
-                    <button className="btn btn-sm btn-link" onClick={() => {navigate("/result_view/" + ExamResult_id)}}>
-                        view
-                    </button>
-                </div>
-            </div>
-    */
 
 }

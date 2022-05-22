@@ -3,6 +3,8 @@ import api from "../../api";
 import {useNavigate} from "react-router-dom";
 import {loginAuth} from "../../Auth";
 import Subject from "../../Models/Subject";
+import {Request} from "../../API.Interaction/api";
+import Exams from "../../API.Interaction/ExamsAPI";
 
 export default function (){
 
@@ -27,15 +29,10 @@ export default function (){
 
             try{
 
-                let response = await api.get("/Subjects/show");
-                if(response.data.header.error === "true"){
-                    console.log(response.data.header.message);
-                    return;
-                }
+                let response = await Request("post", "/Subjects/show");
 
-                setSubjects(response.data.data);
-
-                setInputs({...inputs, subject: response.data.data[0].name});
+                setSubjects(response);
+                setInputs({...inputs, subject: response[0].name});
 
             }catch({message}){
                 console.log(message);
@@ -62,25 +59,21 @@ export default function (){
     async function createExam(event: any){
 
         event.preventDefault();
-        let data = new FormData();
-        data.append("title", inputs.title);
-        data.append("subject", inputs.subject);
-        data.append("description", inputs.description);
 
         try{
-            let response = await api.post("/Exam/save", data);
-            if(response.data.header.error === "true"){
-                console.log(response.data.header.message);
-                return;
-            }
 
+            await Exams.createExam({
+                title: inputs.title,
+                subject: inputs.subject,
+                description: inputs.description
+            });
+
+            event.target.reset();
             navigate("/exam/show");
 
         }catch({message}){
             console.log(message);
         }
-
-        event.target.reset();
 
     }
 

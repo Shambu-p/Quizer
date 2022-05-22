@@ -7,7 +7,8 @@ import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { Questions } from "../../Fetch";
+// import { Questions } from "../../Fetch";
+import Questions from "../../API.Interaction/QuestionsAPI";
 import Choice from "../../Models/Choice";
 import Question from "../../Models/Question";
 
@@ -48,17 +49,12 @@ export default function (props: {view_type: any, question: any}){
         event.preventDefault();
         try {
 
-            
+            let response = await Questions.addChoice({
+                question_id: (questions ? questions.id : 0),
+                text: inputs.text
+            });
 
-            let data = new FormData();
-            data.append("question_id", (questions ? questions.id.toString() : ""));
-            data.append("text", inputs.text);
-            let response = await api.post("/Question/add_choice", data);
-            if(response.data.data.header === "true"){
-                return;
-            }
-
-            setChoices([...choices, response.data.data]);
+            setChoices([...choices, response]);
             event.target.reset();
 
         }catch ({message}){
@@ -68,25 +64,15 @@ export default function (props: {view_type: any, question: any}){
 
     let chooseAnswer = async (choice_id: number) => {
         try {
-
-            let data = new FormData();
-            // @ts-ignore
-            data.append("question_id", questions.id);
-            data.append("answer", choice_id.toString());
-            let response = await api.post("/Question/update_answer", data);
-            if(response.data.data.header === "true"){
-                alert(response.data.data.message);
-            }
-
+            await Questions.chooseAnswer((questions ? questions.id : 0), choice_id);
         }catch ({message}){
-            console.log(message);
+            alert(message);
         }
     }
 
     choice_components = choices.map(choice => {
-        
-        // @ts-ignore
-        let name = "choice_" + questions.id;
+
+        let name = (questions ? "choice_" + questions.id : "choice_");
 
         if(props.view_type && props.view_type === "edit"){
             return (
@@ -109,8 +95,7 @@ export default function (props: {view_type: any, question: any}){
                     </Typography>
                 );
             }
-            //@ts-ignore
-            else if(choice.id === questions.answer){
+            else if(questions && choice.id === questions.answer){
                 return (
                     <Typography
                         key={choice.id}

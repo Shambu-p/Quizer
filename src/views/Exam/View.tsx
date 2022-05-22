@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from "react";
-import api from "../../api";
 import {useNavigate, useParams} from "react-router-dom";
 import CreateQuestion from "../../components/Question/Create";
 import Question from "../../components/Question/Question";
-import variables, {loginAuth} from "../../Auth";
+import {loginAuth} from "../../API.Interaction/AuthAPI";
 import { Exams } from "../../Fetch";
 import ExamAppbar from "../../components/AppBars/ExamAppbar";
 import Exam from "../../Models/Exam";
 import ExamQuestionCombination from "../../Models/ExamQuestionCombination";
+import QuestionsAPI from "../../API.Interaction/QuestionsAPI";
+import useGlobalState from "../../GlobalState";
 
 const examPlaceholder = {
     id: 0,
@@ -22,6 +23,7 @@ export default function (){
 
     const [exam, setExam] = useState<Exam>();
     const [questions, setQuestions] = useState<ExamQuestionCombination[]>([]);
+    const [logged_user, setLog] = useGlobalState<"logged_user" | "is_logged_in">("logged_user");
     const params: any = useParams();
     const navigate = useNavigate();
 
@@ -50,24 +52,22 @@ export default function (){
     }, []);
 
     let createNewQuestion = async (text: string) => {
+
         try {
 
-            let data = new FormData();
-            data.append("text", text);
-            data.append("exam_id", params.exam_id);
-            data.append("subject", (exam ? exam.subject : ""));
-            // @ts-ignore
-            data.append("token", variables.logged_user.token);
-            let response = await api.post("/Exam/add_question", data);
-            if(response.data.data.header === "true"){
-                return;
-            }
+            let response = await QuestionsAPI.addQuestion({
+                text: text,
+                exam_id: params.exam_id,
+                subject: (exam ? exam.subject : ""),
+                token: ((typeof logged_user !== "boolean" && logged_user) ? logged_user.token : "")
+            });
 
-            setQuestions([...questions, response.data.data]);
+            setQuestions([...questions, response]);
 
         }catch ({message}){
             console.log(message);
         }
+
     };
 
     let question_list = (questions.length !== 0) ? questions.map(question => {

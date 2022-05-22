@@ -12,7 +12,7 @@ export function set(cname: string, cvalue: any, expire = 1) {
     d.setTime(d.getTime() + (expire*24*60*60*1000));
     let expires = "expires="+ d.toUTCString();
 
-    document.cookie = cname + "=" + encripte(cvalue) + ";" + expires + ";path="+window.location.origin;
+    document.cookie = cname + "=" + encrypt(cvalue) + ";" + expires + ";path="+window.location.origin;
 
 }
 
@@ -62,12 +62,8 @@ export function get(key: string){
 
         tmp = co.trim().split('=');
 
-        if(tmp.length == 2){
-
-            if(tmp[0] == key){
-                return decripte(tmp[1]);
-            }
-
+        if(tmp.length == 2 && tmp[0] == key){
+            return decrypt(tmp[1]);
         }
 
     }
@@ -76,7 +72,7 @@ export function get(key: string){
 
 }
 
-export function encripte(str: string){
+export function encrypt(str: string){
 
     let str_length = str.length;
     let half = Math.floor(str_length/2);
@@ -95,7 +91,7 @@ export function encripte(str: string){
 
 }
 
-export function decripte(str: string){
+export function decrypt(str: string){
 
     let dstr = str.slice((str.length - (str.length*2)), -4);
     let dstr_length = dstr.length;

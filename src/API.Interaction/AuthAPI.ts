@@ -1,8 +1,8 @@
-import api from "./api";
+import {Request} from "./api";
 import * as cookies from "../cookies";
 import globalState from '../GlobalState';
 
-const [logged_user, setState] = globalState("logged_user");
+const [logged_user, setState] = globalState<"logged_user" | "is_logged_in">("logged_user");
 
 export async function loginAuth(){
 
@@ -25,18 +25,14 @@ export async function loginAuth(){
 export async function Login(email: string, password: string){
 
     try{
-        
-        let data = new FormData();
-        data.append("email", email);
-        data.append("password", password);
-        let response = await api.post("/Auth/login", data);
 
-        if(response.data.header.error === "true"){
-            throw new Error(response.data.header.message);
-        }
+        let response = await Request("post", "/Auth/login", {
+            email: email,
+            password: password
+        });
 
-        cookies.set("login_token", response.data.data.token, 2);
-        return response.data.data;
+        cookies.set("login_token", response.token, 2);
+        return response;
 
     }catch(error){
         throw error;
@@ -48,15 +44,7 @@ export async function Logout(token: string){
 
     try{
 
-        let data = new FormData();
-        data.append("token", token);
-
-        let response = await api.post("/Auth/logout", data);
-        if(response.data.header.error === "true"){
-            throw new Error(response.data.header.message);
-        }
-
-        setState(null);
+        await Request("post", "/Auth/logout", {token: token});
         cookies.remove("login_token");
 
     }catch (error){
@@ -71,14 +59,9 @@ async function information(token: string){
 
     try{
 
-        let data = new FormData();
-        data.append("token", token);
-
-        let response = await api.post("/Auth/authorization", data);
-        if(response.data.header.error === "false"){
-            setState({...response.data.data, token: token});
-            ret = true;
-        }
+        let response = await Request("post", "/Auth/authorization", {token: token});
+        setState({...response, token: token});
+        ret = true;
 
     }catch ({message}){
         console.log(message);

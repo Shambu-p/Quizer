@@ -1,17 +1,27 @@
 import React, {useEffect, useState} from "react";
-import api from "../../api";
 import {useNavigate, useParams} from "react-router-dom";
-import variables, {loginAuth} from "../../Auth";
+import {loginAuth} from "../../Auth";
 import { Exams } from "../../Fetch";
 import ExamAppbar from "../../components/AppBars/ExamAppbar";
 import { Box, Button, Typography} from "@mui/material";
 import Exam from "../../Models/Exam";
+import useGlobalState from "../../GlobalState";
+import ResultsAPI from "../../API.Interaction/ResultsAPI";
 
+
+let examPlaceholder: Exam = {
+    id: 0,
+    title: "",
+    data: 0,
+    subject: "",
+    description: "",
+    count: 0
+};
 
 export default function () {
 
-    //@ts-ignore
-    const [exam, setExam] = useState<Exam>({});
+    const [exam, setExam] = useState<Exam>();
+    const [logged_user, setLog] = useGlobalState<"logged_user" | "is_logged_in">("logged_user");
     const params: any = useParams();
     const navigate = useNavigate();
 
@@ -40,32 +50,23 @@ export default function () {
     }, []);
 
     let startExam = async () => {
+
         try {
-
-            let data = new FormData();
-            data.append("exam_id", params.exam_id);
-            // @ts-ignore
-            data.append("token", variables.logged_user.token);
-
-            let response = await api.post("/ExamResult/save", data);
-            if(response.data.data.header === "true"){
-                return;
-            }
-
-            navigate("/take_exam/" + response.data.data.id + "/" + params.exam_id, {replace: true});
-
-        }catch ({message}){
+            let response = await ResultsAPI.addResult(params.exam_id, ((typeof logged_user !== "boolean" && logged_user) ? logged_user.token : ""));
+            navigate("/take_exam/" + response.id + "/" + params.exam_id, {replace: true});
+        }catch({message}){
             console.log(message);
         }
+
     };
 
     return (
         <div className="container mt-4">
-            <ExamAppbar exam={exam} />
+            <ExamAppbar exam={exam ?? examPlaceholder} />
             
             <Box component="div" sx={{p: 3}}>
                 <Typography variant="body1" component="div" sx={{mb: 5}} className="lead">
-                    {exam.description ?? ""}
+                    {exam ? exam.description : ""}
                 </Typography>
                 <Button variant="contained" className="bg-dark" onClick={() => {startExam();}}>Start Examination</Button>
             </Box>

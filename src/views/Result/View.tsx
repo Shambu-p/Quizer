@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import Question from "../../components/Question/Question";
-import variables, {loginAuth} from "../../Auth";
+import {loginAuth} from "../../API.Interaction/AuthAPI";
 import ExamAppbar from "../../components/AppBars/ExamAppbar";
 import { Card, CardContent, Typography} from "@mui/material";
-import { Result } from "../../Fetch";
-import ExamQuestionCombination from "../../Models/ExamQuestionCombination";
 import ExamResult from "../../Models/ExamResult";
 import Exam from "../../Models/Exam";
+import ResultsAPI from "../../API.Interaction/ResultsAPI";
+import ExamResultQuestion from "../../Models/ExamResultQuestion";
+import useGlobalState from "../../GlobalState";
 
 const examPlaceholder = {
     id: 0,
@@ -22,7 +23,8 @@ export default function (){
 
     const [exam, setExam] = useState<Exam>();
     const [result, setResult] = useState<ExamResult>();
-    const [questions, setQuestions] = useState<ExamQuestionCombination[]>([]);
+    const [questions, setQuestions] = useState<ExamResultQuestion[]>([]);
+    const [logged_user, setLog] = useGlobalState<"logged_user" | "is_logged_in">("logged_user");
     const params: any = useParams();
     const navigate = useNavigate();
 
@@ -37,7 +39,7 @@ export default function (){
 
             try {
 
-                let response = await Result.find(params.result_id, variables.getUser().token);
+                let response = await ResultsAPI.find(params.result_id, (typeof logged_user !== "boolean" && logged_user) ? logged_user.token : "");
 
                 setExam(response.exam);
                 setResult(response.result);

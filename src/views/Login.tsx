@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {useNavigate} from "react-router-dom";
-import store, {Login, loginAuth} from '../Auth';
+import {loginAuth, Login} from "../API.Interaction/AuthAPI";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Container, CssBaseline, Box, Avatar, Button, Typography, TextField } from "@mui/material";
+import useGlobalState from "../GlobalState";
 
 export default function (){
 
@@ -10,6 +11,7 @@ export default function (){
         email: "",
         password: ""
     });
+    const [logged_user, setLog] = useGlobalState<"logged_user" | "is_logged_in">("logged_user");
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -43,7 +45,9 @@ export default function (){
         event.preventDefault();
         try {
 
-            store.logged_user = await Login(inputs.email, inputs.password);
+            let response = await Login(inputs.email, inputs.password);
+            setLog(response);
+
             navigate("/exam/show");
 
         }catch ({message}){

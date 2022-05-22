@@ -1,24 +1,23 @@
-import api from "./api";
+import {Request} from "./api";
 import ResultView from "../Models/ResultView";
+import api from "../api";
+import ExamResult from "../Models/ExamResult";
+import Exam from "../Models/Exam";
+import ExamResultQuestion from "../Models/ExamResultQuestion";
+import Examination from "../Models/Examination";
+import variables from "../Auth";
 
 /**
  * this class contains all the method used for 
  * fetching data that are related with examination result views
  */
- export class Result {
+ export default class Result {
 
     static async byUser(token: string): Promise<any>{
 
         try {
 
-            let data = new FormData();
-            data.append("token", token);
-            let response: any = await api.post("/ExamResult/show", data);
-            if(response.data.header.error === "true"){
-                throw new Error(response.data.header.message);
-            }
-
-            return response.data.data;
+            return await Request("post", "/ExamResult/show", {token: token});
 
         }catch (error){
             throw error;
@@ -26,21 +25,44 @@ import ResultView from "../Models/ResultView";
 
     }
 
-    static async find(result_id: number, token: string): Promise<ResultView>{
+    static async find(result_id: number, token: string): Promise<Examination>{
 
         try {
 
-            let data = new FormData();
-            data.append("result_id", result_id.toString());
-            data.append("token", token);
-            let response = await api.post("/ExamResult/view", data);
-            if(response.data.data.header === "true"){
-                throw new Error(response.data.header.message);
-            }
-
-            return response.data.data;
+            return await Request("post", "/ExamResult/view", {
+                result_id: result_id,
+                token: token
+            });
 
         }catch (error){
+            throw error;
+        }
+
+    }
+
+    static async addResult(exam_id: number, token: string): Promise<ExamResult>{
+
+        try{
+            return await Request("post", "/ExamResult/save", {
+                exam_id: exam_id,
+                token: token
+            });
+        }catch (error) {
+            throw error;
+        }
+
+    }
+
+    static async answerQuestion(answer_data: {
+        choice: number,
+        result_id: number,
+        question: number,
+        token: string
+    }): Promise<ExamResultQuestion> {
+
+        try{
+            return await Request("post", "/ExamResult/add_result", answer_data);
+        }catch(error){
             throw error;
         }
 

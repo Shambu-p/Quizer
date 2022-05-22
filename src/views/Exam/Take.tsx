@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from "react";
-import api from "../../api";
 import {useNavigate, useParams} from "react-router-dom";
-import variables, {loginAuth} from "../../Auth";
+import {loginAuth} from "../../API.Interaction/AuthAPI";
 import Taking from "../../components/Question/Taking";
 import ExamAppbar from "../../components/AppBars/ExamAppbar";
 import ExamResult from "../../Models/ExamResult";
 import Exam from "../../Models/Exam";
 import {Exams} from "../../Fetch";
 import ExamQuestionCombination from "../../Models/ExamQuestionCombination";
+import ResultsAPI from "../../API.Interaction/ResultsAPI";
+import useGlobalState from "../../GlobalState";
 
 let examPlaceholder: Exam = {
     id: 0,
@@ -23,6 +24,7 @@ export default function (){
     const [result, setResult] = useState<ExamResult>();
     const [exam, setExam] = useState<Exam>();
     const [questions, setQuestions] = useState<ExamQuestionCombination[]>([]);
+    const [logged_user, setLog] = useGlobalState<"logged_user" | "is_logged_in">("logged_user");
     const [count, setCount] = useState(0);
     const params: any = useParams();
     const navigate = useNavigate();
@@ -37,15 +39,8 @@ export default function (){
 
             try {
 
-                let data = new FormData();
-                data.append("result_id", params.result_id)
-                data.append("token", variables.getUser().token)
-                let response = await api.post("/ExamResult/view", data);
-                if(response.data.data.header === "true"){
-                    return;
-                }
-
-                setResult(response.data.data.result);
+                let response = await ResultsAPI.find(params.result_id, (typeof logged_user !== "boolean" && logged_user) ? logged_user.token : "");
+                setResult(response.result);
 
             }catch ({message}){
                 console.log(message);
@@ -54,7 +49,6 @@ export default function (){
             try {
 
                 let response = await Exams.find(params.exam_id);
-
                 setExam(response.exam);
                 setQuestions(response.questions);
 
@@ -72,16 +66,12 @@ export default function (){
 
         try {
 
-            let data = new FormData();
-            data.append("choice", choice_id.toString());
-            data.append("result_id", params.result_id);
-            data.append("question", question_id.toString());
-            data.append("token", variables.getUser().token);
-
-            let response = await api.post("/ExamResult/add_result", data);
-            if(response.data.header.error === "true"){
-                return;
-            }
+            await ResultsAPI.answerQuestion({
+                choice: choice_id,
+                result_id: params.result_id,
+                question: question_id,
+                token: (typeof logged_user !== "boolean" && logged_user) ? logged_user.token : ""
+            });
 
             if(questions.length - 1 === count){
                 navigate("/result_view/" + (result ? result.id : ""));
@@ -112,9 +102,7 @@ export default function (){
     return (
         <div className="container mt-4">
             <ExamAppbar exam={exam ?? examPlaceholder} />
-
-            {((question_component[count]) ? question_component : "")}
-
+            {question_component}
         </div>
     );
 
