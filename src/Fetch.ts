@@ -82,10 +82,8 @@ export class Exams {
 }
 
 /**
- * this class contains all the method used for fetching data that are related with examination result views
- * it will return something like the following
- *
- *
+ * this class contains all the method used for 
+ * fetching data that are related with examination result views
  */
 export class Result {
 

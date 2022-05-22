@@ -48,6 +48,8 @@ export default function (props: {view_type: any, question: any}){
         event.preventDefault();
         try {
 
+            
+
             let data = new FormData();
             data.append("question_id", (questions ? questions.id.toString() : ""));
             data.append("text", inputs.text);

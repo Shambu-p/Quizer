@@ -1,10 +1,10 @@
-import {createGlobalState} from 'react-hooks-global-state'
+import {createGlobalState} from 'react-hooks-global-state';
 
-
-const GlobalState = createGlobalState({
+const initialState = {
     logged_user: null,
-    is_signed_in: false
-});
+    is_logged_in : false
+};
 
+const { useGlobalState } = createGlobalState(initialState);
 
-export default GlobalState;
+export default useGlobalState;
