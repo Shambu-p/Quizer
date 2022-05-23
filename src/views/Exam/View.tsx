@@ -3,12 +3,12 @@ import {useNavigate, useParams} from "react-router-dom";
 import CreateQuestion from "../../components/Question/Create";
 import Question from "../../components/Question/Question";
 import {loginAuth} from "../../API.Interaction/AuthAPI";
-import { Exams } from "../../Fetch";
 import ExamAppbar from "../../components/AppBars/ExamAppbar";
 import Exam from "../../Models/Exam";
 import ExamQuestionCombination from "../../Models/ExamQuestionCombination";
 import QuestionsAPI from "../../API.Interaction/QuestionsAPI";
 import Users from "../../Models/Users";
+import Exams from "../../API.Interaction/ExamsAPI";
 
 const examPlaceholder = {
     id: 0,

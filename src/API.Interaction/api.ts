@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://localhost:1111/"
+    // baseURL: "http://localhost:1111/"
+    baseURL: "http://192.168.1.15:1111/"
 });
 
 export async function Request(type: string, url: string, request_data?: (object | FormData)): Promise<any>{

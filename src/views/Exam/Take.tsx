@@ -5,11 +5,10 @@ import Taking from "../../components/Question/Taking";
 import ExamAppbar from "../../components/AppBars/ExamAppbar";
 import ExamResult from "../../Models/ExamResult";
 import Exam from "../../Models/Exam";
-import {Exams} from "../../Fetch";
 import ExamQuestionCombination from "../../Models/ExamQuestionCombination";
 import ResultsAPI from "../../API.Interaction/ResultsAPI";
-import useGlobalState from "../../GlobalState";
 import Users from "../../Models/Users";
+import Exams from "../../API.Interaction/ExamsAPI";
 
 let examPlaceholder: Exam = {
     id: 0,

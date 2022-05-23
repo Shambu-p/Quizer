@@ -69,3 +69,14 @@ async function information(token: string): Promise<{status: boolean, data: (User
     };
 
 }
+
+export async function registration(user_data: {
+    name: string,
+    email: string,
+    age: number,
+    grade: number,
+    password: string,
+    confirm_password: string
+}): Promise<Users> {
+    return Request("post", "/Users/register", user_data);
+}

@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from "react";
-import api from "../../api";
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from "@mui/material/Card";
@@ -7,7 +6,6 @@ import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-// import { Questions } from "../../Fetch";
 import Questions from "../../API.Interaction/QuestionsAPI";
 import Choice from "../../Models/Choice";
 import Question from "../../Models/Question";

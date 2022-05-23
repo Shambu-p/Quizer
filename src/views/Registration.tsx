@@ -1,7 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import api from "../api";
 import {useNavigate} from "react-router-dom";
-import {loginAuth} from '../API.Interaction/AuthAPI';
+import {loginAuth, registration} from '../API.Interaction/AuthAPI';
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Container, CssBaseline, Box, Avatar, Button, Typography, TextField } from "@mui/material";
@@ -62,25 +61,19 @@ export default function (){
         event.preventDefault();
         try {
 
-            let data = new FormData();
-            data.append("name", inputs.name);
-            data.append("email", inputs.email);
-            data.append("age", inputs.age);
-            data.append("grade", inputs.grade);
-            data.append("password", inputs.password);
-            data.append("confirm_password", inputs.confirm_password);
-
-            let response = await api.post("/Users/register", data);
-
-            if(response.data.header.error === "true"){
-                alert(response.data.header.message)
-                return;
-            }
+            let response = await registration({
+                name: inputs.name,
+                email: inputs.email,
+                age: parseInt(inputs.age),
+                grade: parseInt(inputs.grade),
+                password: inputs.password,
+                confirm_password: inputs.confirm_password
+            });
 
             navigate("/login");
 
         }catch ({message}){
-            console.log(message);
+            alert(message);
         }
     }
 

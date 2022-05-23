@@ -8,10 +8,10 @@ import Button from '@mui/material/Button';
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
-import { Questions } from "../../Fetch";
 import Choice from "../../Models/Choice";
 import Question from "../../Models/Question";
 import ExamQuestionCombination from "../../Models/ExamQuestionCombination";
+import Questions from "../../API.Interaction/QuestionsAPI";
 
 type myProp = {
     visibility_type: boolean,

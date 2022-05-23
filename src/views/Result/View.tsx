@@ -8,7 +8,6 @@ import ExamResult from "../../Models/ExamResult";
 import Exam from "../../Models/Exam";
 import ResultsAPI from "../../API.Interaction/ResultsAPI";
 import ExamResultQuestion from "../../Models/ExamResultQuestion";
-import useGlobalState from "../../GlobalState";
 import Users from "../../Models/Users";
 
 const examPlaceholder = {

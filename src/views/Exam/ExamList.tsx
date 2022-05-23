@@ -2,7 +2,7 @@ import {useNavigate} from 'react-router-dom';
 import React, {useEffect, useState} from "react";
 import EmptyMessage from "../../components/Extra/EmptyMessage";
 import {loginAuth} from "../../API.Interaction/AuthAPI";
-import { Exams } from '../../Fetch';
+import Exams from "../../API.Interaction/ExamsAPI";
 
 import { Card, CardContent, Button, Typography} from "@mui/material";
 import Exam from "../../Models/Exam";

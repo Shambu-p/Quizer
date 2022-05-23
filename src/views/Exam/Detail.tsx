@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {loginAuth} from "../../API.Interaction/AuthAPI";
-import { Exams } from "../../Fetch";
 import ExamAppbar from "../../components/AppBars/ExamAppbar";
 import { Box, Button, Typography} from "@mui/material";
 import Exam from "../../Models/Exam";
 import ResultsAPI from "../../API.Interaction/ResultsAPI";
 import Users from "../../Models/Users";
+import Exams from "../../API.Interaction/ExamsAPI";
 
 
 let examPlaceholder: Exam = {
