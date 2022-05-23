@@ -3,7 +3,7 @@ import {useNavigate} from "react-router-dom";
 import {loginAuth, Login} from "../API.Interaction/AuthAPI";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Container, CssBaseline, Box, Avatar, Button, Typography, TextField } from "@mui/material";
-import useGlobalState from "../GlobalState";
+import Users from "../Models/Users";
 
 export default function (){
 
@@ -11,13 +11,15 @@ export default function (){
         email: "",
         password: ""
     });
-    const [logged_user, setLog] = useGlobalState<"logged_user" | "is_logged_in">("logged_user");
+    const [logged_user, setLog] = useState<Users | null>(null);
+    const [is_logged_in, setLogState] = useState<boolean>(false);
     const navigate = useNavigate();
 
     useEffect(() => {
 
         let checkAuth = async () => {
-            if(await loginAuth()){
+            let auth = await loginAuth();
+            if(auth.status){
                 navigate("/exam/show", {replace: true});
             }
         };
@@ -47,6 +49,7 @@ export default function (){
 
             let response = await Login(inputs.email, inputs.password);
             setLog(response);
+            setLogState(true);
 
             navigate("/exam/show");
 

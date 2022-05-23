@@ -1,32 +1,34 @@
 import {useNavigate} from 'react-router-dom';
 import React, {useEffect, useState} from "react";
 import EmptyMessage from "../../components/Extra/EmptyMessage";
-import variables, {loginAuth} from "../../Auth";
+import {loginAuth} from "../../API.Interaction/AuthAPI";
 import { Exams } from '../../Fetch';
 
 import { Card, CardContent, Button, Typography} from "@mui/material";
 import Exam from "../../Models/Exam";
-import useGlobalState from "../../GlobalState";
+import Users from "../../Models/Users";
 
 
 export default function (){
 
     const navigate = useNavigate();
     const [exams, setExam] = useState<Exam[]>([]);
-    const [logged_user, setLog] = useGlobalState<"logged_user" | "is_logged_in">("logged_user");
+    const [logged_user, setLog] = useState<Users | null>(null);
 
     useEffect(()=> {
         let getExams = async () => {
 
-            if(!await loginAuth()){
+            let auth = await loginAuth();
+            if(!auth.status){
                 navigate("/login", {replace: true});
                 return;
             }
 
+            setLog(auth.data);
+
             try {
 
                 let response = await Exams.all();
-
                 setExam(response);
 
             }catch ({message}){
@@ -53,7 +55,7 @@ export default function (){
                         [{exam.count ?? 0}] {exam.subject ?? "unknown"} Subject Questions
                     </Typography>
                     {
-                        ((typeof logged_user !== "boolean" && logged_user.role === "admin") ? (
+                        ((logged_user && logged_user.role === "admin") ? (
                             <Button size="small" variant="contained" className="bg-dark" sx={{mr: 2}} onClick={() => {navigate("/exam_detail/" + exam.id)}}>
                                 view
                             </Button>

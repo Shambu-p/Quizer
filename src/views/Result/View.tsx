@@ -9,6 +9,7 @@ import Exam from "../../Models/Exam";
 import ResultsAPI from "../../API.Interaction/ResultsAPI";
 import ExamResultQuestion from "../../Models/ExamResultQuestion";
 import useGlobalState from "../../GlobalState";
+import Users from "../../Models/Users";
 
 const examPlaceholder = {
     id: 0,
@@ -24,7 +25,7 @@ export default function (){
     const [exam, setExam] = useState<Exam>();
     const [result, setResult] = useState<ExamResult>();
     const [questions, setQuestions] = useState<ExamResultQuestion[]>([]);
-    const [logged_user, setLog] = useGlobalState<"logged_user" | "is_logged_in">("logged_user");
+    const [logged_user, setLog] = useState<Users | null>(null);
     const params: any = useParams();
     const navigate = useNavigate();
 
@@ -32,14 +33,17 @@ export default function (){
 
         let getExam = async  () => {
 
-            if(!await loginAuth()){
+            let auth = await loginAuth();
+            if(!auth.status){
                 navigate("/login", {replace: true});
                 return;
             }
 
+            setLog(auth.data);
+
             try {
 
-                let response = await ResultsAPI.find(params.result_id, (typeof logged_user !== "boolean" && logged_user) ? logged_user.token : "");
+                let response = await ResultsAPI.find(params.result_id, (logged_user && logged_user.token) ? logged_user.token : "");
 
                 setExam(response.exam);
                 setResult(response.result);

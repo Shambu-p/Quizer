@@ -12,8 +12,3 @@ export default function(props: {exam: Exam}){
         </Card>
     );
 }
-
-/* <div className="p-3 mb-4 shadow-sm rounded" >
-                <h5 className="card-title">{exam.title}</h5>
-                <small className="text-muted">{exam.subject} Subject</small>
-            </div> */

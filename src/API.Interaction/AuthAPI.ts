@@ -1,23 +1,18 @@
 import {Request} from "./api";
 import * as cookies from "../cookies";
-import globalState from '../GlobalState';
+import Users from "../Models/Users";
 
-const [logged_user, setState] = globalState<"logged_user" | "is_logged_in">("logged_user");
-
-export async function loginAuth(){
+export async function loginAuth(): Promise<{status: boolean, data: (Users | null)}> {
 
     let token = cookies.get("login_token");
 
     if(token){
-
-        if(logged_user){
-            return true;
-        }
-
         return await information(token);
-
     }else{
-        return false;
+        return {
+            status: false,
+            data: null
+        };
     }
 
 }
@@ -40,7 +35,7 @@ export async function Login(email: string, password: string){
 
 }
 
-export async function Logout(token: string){
+export async function Logout(token: string): Promise<void> {
 
     try{
 
@@ -53,20 +48,24 @@ export async function Logout(token: string){
 
 }
 
-async function information(token: string){
-
-    let ret = false;
+async function information(token: string): Promise<{status: boolean, data: (Users | null)}> {
 
     try{
 
         let response = await Request("post", "/Auth/authorization", {token: token});
-        setState({...response, token: token});
-        ret = true;
+
+        return {
+            status: true,
+            data: {...response, token: token}
+        };
 
     }catch ({message}){
         console.log(message);
     }
 
-    return ret;
+    return {
+        status: false,
+        data: null
+    };
 
 }

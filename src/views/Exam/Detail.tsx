@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
-import {loginAuth} from "../../Auth";
+import {loginAuth} from "../../API.Interaction/AuthAPI";
 import { Exams } from "../../Fetch";
 import ExamAppbar from "../../components/AppBars/ExamAppbar";
 import { Box, Button, Typography} from "@mui/material";
 import Exam from "../../Models/Exam";
-import useGlobalState from "../../GlobalState";
 import ResultsAPI from "../../API.Interaction/ResultsAPI";
+import Users from "../../Models/Users";
 
 
 let examPlaceholder: Exam = {
@@ -21,7 +21,7 @@ let examPlaceholder: Exam = {
 export default function () {
 
     const [exam, setExam] = useState<Exam>();
-    const [logged_user, setLog] = useGlobalState<"logged_user" | "is_logged_in">("logged_user");
+    const [logged_user, setLog] = useState<Users | null>(null);
     const params: any = useParams();
     const navigate = useNavigate();
 
@@ -29,10 +29,13 @@ export default function () {
 
         let getExam = async () => {
 
-            if(!await loginAuth()){
+            let auth = await loginAuth();
+            if(!auth.status){
                 navigate("/login", {replace: true});
                 return;
             }
+
+            setLog(auth.data);
 
             try {
 
@@ -52,7 +55,7 @@ export default function () {
     let startExam = async () => {
 
         try {
-            let response = await ResultsAPI.addResult(params.exam_id, ((typeof logged_user !== "boolean" && logged_user) ? logged_user.token : ""));
+            let response = await ResultsAPI.addResult(params.exam_id, ((logged_user != null && logged_user.token) ? logged_user.token : ""));
             navigate("/take_exam/" + response.id + "/" + params.exam_id, {replace: true});
         }catch({message}){
             console.log(message);

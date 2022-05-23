@@ -1,7 +1,5 @@
 import React, {useState, useEffect} from "react";
-import api from "../../api";
 import {useNavigate} from "react-router-dom";
-import {loginAuth} from "../../Auth";
 import Subject from "../../Models/Subject";
 import {Request} from "../../API.Interaction/api";
 import Exams from "../../API.Interaction/ExamsAPI";
@@ -21,11 +19,6 @@ export default function (){
     useEffect(() => {
 
         let getSubjects = async () => {
-
-            if(!await loginAuth()){
-                navigate("/login", {replace: true});
-                return;
-            }
 
             try{
 

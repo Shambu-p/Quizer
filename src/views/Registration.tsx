@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import api from "../api";
 import {useNavigate} from "react-router-dom";
-import {loginAuth} from '../Auth';
+import {loginAuth} from '../API.Interaction/AuthAPI';
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Container, CssBaseline, Box, Avatar, Button, Typography, TextField } from "@mui/material";
@@ -22,7 +22,8 @@ export default function (){
     useEffect(() => {
 
         let checkAuth = async () => {
-            if(await loginAuth()){
+            let auth = await loginAuth();
+            if(auth.status){
                 navigate("/exam/show", {replace: true});
             }
         };

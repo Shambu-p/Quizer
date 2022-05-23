@@ -1,25 +1,28 @@
 import {useNavigate} from 'react-router-dom';
-import React, {useState, useEffect} from 'react';
-import store, {Logout, loginAuth} from '../../Auth';
+import React, {useEffect, useState} from 'react';
+import {Logout, loginAuth} from '../../API.Interaction/AuthAPI';
 import { Card, CardContent, ButtonGroup, Box, Button, Typography} from "@mui/material";
+import Users from "../../Models/Users";
 
 export default function (props: any){
 
-
     const navigate = useNavigate();
+    const [logged_user, setLog] = useState<Users | null>(null);
     const [is_logged_in, setState] = useState(false);
 
     useEffect(function (){
 
         let checkAuth = async () => {
 
-            if(!await loginAuth()){
+            let auth = await loginAuth();
+            if(!auth.status){
                 if(props.page !== "home"){
                     navigate("/login", {replace: true});
                     return;
                 }
             }else{
-                setState(true);
+                setState(auth.status);
+                setLog(auth.data);
             }
 
         };
@@ -32,8 +35,7 @@ export default function (props: any){
 
         try{
 
-            await Logout(store.getUser().token);
-            store.logged_user = null;
+            await Logout((logged_user !== null && logged_user.token) ? logged_user.token : "");
             setState(false);
             navigate("/login");
     
@@ -50,7 +52,7 @@ export default function (props: any){
                 <Box>
                     <ButtonGroup variant="contained" size="small">
                         <Button className="bg-dark" sx={{display: (is_logged_in ? "" : "none")}} onClick={() => {navigate("/results")}}>Results</Button>
-                        <Button className="bg-dark" sx={{display: ((is_logged_in && store.getUser().role === "admin") ? "" : "none")}} onClick={() => {navigate("/exam/create")}}>Add Exam</Button>
+                        <Button className="bg-dark" sx={{display: ((is_logged_in && logged_user !== null && logged_user.role === "admin") ? "" : "none")}} onClick={() => {navigate("/exam/create")}}>Add Exam</Button>
                         <Button className="bg-dark" sx={{display: (is_logged_in ? "" : "none")}} onClick={() => {navigate("/exam/show")}}>Exams</Button>
                         <Button className="bg-dark" sx={{display: (is_logged_in ? "" : "none")}} onClick={logout}>Logout</Button>
                         <Button className="bg-dark" sx={{display: (is_logged_in ? "none":"")}} onClick={() => {navigate("/login")}}>Login</Button>

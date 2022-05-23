@@ -8,7 +8,7 @@ import ExamAppbar from "../../components/AppBars/ExamAppbar";
 import Exam from "../../Models/Exam";
 import ExamQuestionCombination from "../../Models/ExamQuestionCombination";
 import QuestionsAPI from "../../API.Interaction/QuestionsAPI";
-import useGlobalState from "../../GlobalState";
+import Users from "../../Models/Users";
 
 const examPlaceholder = {
     id: 0,
@@ -23,17 +23,20 @@ export default function (){
 
     const [exam, setExam] = useState<Exam>();
     const [questions, setQuestions] = useState<ExamQuestionCombination[]>([]);
-    const [logged_user, setLog] = useGlobalState<"logged_user" | "is_logged_in">("logged_user");
+    const [logged_user, setLog] = useState<Users | null>(null);
     const params: any = useParams();
     const navigate = useNavigate();
 
     useEffect(function (){
         let getExam = async  () => {
 
-            if(!await loginAuth()){
+            let auth = await loginAuth();
+            if(!auth.status){
                 navigate("/login", {replace: true});
                 return;
             }
+
+            setLog(auth.data);
 
             try{
 
@@ -59,7 +62,7 @@ export default function (){
                 text: text,
                 exam_id: params.exam_id,
                 subject: (exam ? exam.subject : ""),
-                token: ((typeof logged_user !== "boolean" && logged_user) ? logged_user.token : "")
+                token: ((logged_user && logged_user.token) ? logged_user.token : "")
             });
 
             setQuestions([...questions, response]);

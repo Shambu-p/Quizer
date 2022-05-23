@@ -9,6 +9,7 @@ import {Exams} from "../../Fetch";
 import ExamQuestionCombination from "../../Models/ExamQuestionCombination";
 import ResultsAPI from "../../API.Interaction/ResultsAPI";
 import useGlobalState from "../../GlobalState";
+import Users from "../../Models/Users";
 
 let examPlaceholder: Exam = {
     id: 0,
@@ -24,7 +25,7 @@ export default function (){
     const [result, setResult] = useState<ExamResult>();
     const [exam, setExam] = useState<Exam>();
     const [questions, setQuestions] = useState<ExamQuestionCombination[]>([]);
-    const [logged_user, setLog] = useGlobalState<"logged_user" | "is_logged_in">("logged_user");
+    const [logged_user, setLog] = useState<Users | null>(null);
     const [count, setCount] = useState(0);
     const params: any = useParams();
     const navigate = useNavigate();
@@ -32,14 +33,17 @@ export default function (){
     useEffect(function (){
         let getExam = async  () => {
 
-            if(!await loginAuth()){
+            let auth = await loginAuth();
+            if(!auth.status){
                 navigate("/login", {replace: true});
                 return;
             }
 
+            setLog(auth.data);
+
             try {
 
-                let response = await ResultsAPI.find(params.result_id, (typeof logged_user !== "boolean" && logged_user) ? logged_user.token : "");
+                let response = await ResultsAPI.find(params.result_id, (logged_user && logged_user.token) ? logged_user.token : "");
                 setResult(response.result);
 
             }catch ({message}){
@@ -70,7 +74,7 @@ export default function (){
                 choice: choice_id,
                 result_id: params.result_id,
                 question: question_id,
-                token: (typeof logged_user !== "boolean" && logged_user) ? logged_user.token : ""
+                token: (logged_user && logged_user.token) ? logged_user.token : ""
             });
 
             if(questions.length - 1 === count){

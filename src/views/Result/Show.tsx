@@ -4,26 +4,29 @@ import {loginAuth} from "../../API.Interaction/AuthAPI";
 import MainAppbar from '../../components/AppBars/Main';
 import EmptyMessage from '../../components/Extra/EmptyMessage';
 import { Card, Button, CardContent, Typography} from "@mui/material";
-import useGlobalState from "../../GlobalState";
 import ResultsAPI from "../../API.Interaction/ResultsAPI";
+import Users from "../../Models/Users";
 
 export default function (){
 
     const navigate = useNavigate();
     let [results, setResults] = useState([]);
-    const [logged_user, setLog] = useGlobalState<"logged_user" | "is_logged_in">("logged_user");
+    const [logged_user, setLog] = useState<Users | null>(null);
 
     useEffect(()=> {
         let getExams = async () => {
 
-            if(!await loginAuth()){
+            let auth = await loginAuth();
+            if(!auth.status){
                 navigate("/login", {replace: true});
                 return;
             }
 
+            setLog(auth.data);
+
             try {
 
-                let response: never[] = await ResultsAPI.byUser(((typeof logged_user !== "boolean" && logged_user) ? logged_user.token : ""));
+                let response: never[] = await ResultsAPI.byUser(((logged_user && logged_user.token) ? logged_user.token : ""));
                 setResults(response);
 
             }catch ({message}){
